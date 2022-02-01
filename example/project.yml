@@ -1,0 +1,58 @@
+name: Example
+
+options:
+  bundleIdPrefix: dev.jano.coordinator
+  usesTabs: false
+  indentWidth: 4
+  tabWidth: 4
+  createIntermediateGroups: true
+  deploymentTarget:
+    iOS: 15.0
+
+settings:
+    CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED: YES
+    IPHONEOS_DEPLOYMENT_TARGET: 15.0
+
+packages:
+ 
+    CoordinatorDynamic:
+      path: ..
+
+targets:
+
+  Example:
+    dependencies:
+      - package: CoordinatorDynamic
+    platform: iOS
+    properties:
+      UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+      UILaunchStoryboardName: LaunchScreen
+    scheme:
+      testTargets:
+        - ExampleTests
+    settings:
+      INFOPLIST_FILE: targets/main/Info.plist
+      IPHONEOS_DEPLOYMENT_TARGET: 15.0
+      PRODUCT_BUNDLE_IDENTIFIER: "dev.jano.example"
+      CURRENT_PROJECT_VERSION: 1
+      MARKETING_VERSION: 1.0.0
+      PRODUCT_NAME: Example
+    sources:
+      - sources/main
+      - targets/main/Info.plist
+    type: application
+    postCompileScripts:
+      - script: swiftlint
+        name: Swiftlint
+
+  ExampleTests:
+    dependencies:
+      - package: CoordinatorDynamic
+    platform: iOS
+    settings:
+      INFOPLIST_FILE: targets/tests/Info.plist
+      PRODUCT_BUNDLE_IDENTIFIER: dev.jano.coordinator.tests
+      TEST_HOST:
+    sources:
+      - sources/uitests
+    type: bundle.ui-testing
