@@ -38,7 +38,7 @@ jazzy: requirejazzy
 	@echo "Browse the docs at .build/jazzy/index.html"
 
 compile:
-	swift build -Xswiftc "-sdk" -Xswiftc "`xcrun --sdk iphonesimulator --show-sdk-path`" -Xswiftc "-target" -Xswiftc "x86_64-apple-ios14.4-simulator" 
+	swift build -Xswiftc "-sdk" -Xswiftc "`xcrun --sdk iphonesimulator --show-sdk-path`" -Xswiftc "-target" -Xswiftc "x86_64-apple-ios15.0-simulator" 
 
 test: project
 	@PROJECT_NAME="$(shell xcodebuild -showBuildSettings | grep PROJECT_NAME | awk '{print $$NF}')"; \
