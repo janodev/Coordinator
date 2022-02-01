@@ -17,7 +17,7 @@ Benefits
 
 The app delegate retains a root coordinator, which may own and spawn child coordinators for particular flows. Here is a possible implementation of the coordinator:
 
-![Coordinator](https://github.com/janodev/coordinator/raw/master/docs/Coordinator.png)
+![Coordinator](https://raw.githubusercontent.com/janodev/coordinator/main/docs/Coordinator.png)
 
 ### View Controller
 
