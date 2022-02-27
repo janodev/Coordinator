@@ -1,7 +1,7 @@
 import UIKit
 
 @MainActor
-public protocol RootCoordinator: Coordinator {
+public protocol RootCoordinating: Coordinating {
     
     var window: UIWindow { get }
 }

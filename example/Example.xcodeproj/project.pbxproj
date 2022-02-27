@@ -3,15 +3,15 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		0F9AFC6F954707ED46EB2A5B /* LoginCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F39D41B450D8E877BD48F4 /* LoginCoordinator.swift */; };
 		54D1E38726BDFBB69A45D96C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BF1ACB0C12458FEAB03C1D0 /* SceneDelegate.swift */; };
 		5D6B37D9B7A04FBB8063E78F /* MainCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A43E2099D42F1294A500CC /* MainCoordinator.swift */; };
-		802E79DDD26FCBD49099F9F1 /* CoordinatorDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 376BE160AD2BFD9E8B5EC537 /* CoordinatorDynamic */; };
-		85832E9EB068A8B91FE8D8CF /* CoordinatorDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = E0DCB4815E9BBA687544F5A8 /* CoordinatorDynamic */; };
+		802E79DDD26FCBD49099F9F1 /* Coordinator in Frameworks */ = {isa = PBXBuildFile; productRef = 9928C35A4D12322886B00689 /* Coordinator */; };
+		85832E9EB068A8B91FE8D8CF /* Coordinator in Frameworks */ = {isa = PBXBuildFile; productRef = DDFD998537420C9E6ED4B19F /* Coordinator */; };
 		A07F2ECE2EE583716808A715 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F508FC38598C5D52E09357F /* AppDelegate.swift */; };
 		B2AECC78D810E1A47E6D3113 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 494D42C056F6C1C7831A1AAD /* LaunchScreen.storyboard */; };
 		CD3BCE35508AC11A52FB06AB /* HomeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB36F8E3E36B5FA4CA9CFCB /* HomeCoordinator.swift */; };
@@ -39,7 +39,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				85832E9EB068A8B91FE8D8CF /* CoordinatorDynamic in Frameworks */,
+				85832E9EB068A8B91FE8D8CF /* Coordinator in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -47,7 +47,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				802E79DDD26FCBD49099F9F1 /* CoordinatorDynamic in Frameworks */,
+				802E79DDD26FCBD49099F9F1 /* Coordinator in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -171,7 +171,7 @@
 			);
 			name = ExampleTests;
 			packageProductDependencies = (
-				376BE160AD2BFD9E8B5EC537 /* CoordinatorDynamic */,
+				9928C35A4D12322886B00689 /* Coordinator */,
 			);
 			productName = ExampleTests;
 			productReference = E49484C5AC14E0C34C8997F5 /* ExampleTests.xctest */;
@@ -192,7 +192,7 @@
 			);
 			name = Example;
 			packageProductDependencies = (
-				E0DCB4815E9BBA687544F5A8 /* CoordinatorDynamic */,
+				DDFD998537420C9E6ED4B19F /* Coordinator */,
 			);
 			productName = Example;
 			productReference = F6FE7BF0248FC2FF22A10D63 /* Example.app */;
@@ -205,6 +205,14 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1200;
+				TargetAttributes = {
+					3591DD4F91C09DA5DF92CC1F = {
+						DevelopmentTeam = PPSF6CNP8Q;
+					};
+					9878B5EABC7D83477291BAFC = {
+						DevelopmentTeam = PPSF6CNP8Q;
+					};
+				};
 			};
 			buildConfigurationList = 36FC72E69D906F48675C62BF /* Build configuration list for PBXProject "Example" */;
 			compatibilityVersion = "Xcode 10.0";
@@ -328,6 +336,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = PPSF6CNP8Q;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -338,7 +347,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -373,13 +382,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = targets/main/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = dev.jano.example;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.jano.coordinator.example;
 				PRODUCT_NAME = Example;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -393,13 +401,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = targets/main/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = dev.jano.example;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.jano.coordinator.example;
 				PRODUCT_NAME = Example;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -459,6 +466,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = PPSF6CNP8Q;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -475,7 +483,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -520,13 +528,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		376BE160AD2BFD9E8B5EC537 /* CoordinatorDynamic */ = {
+		9928C35A4D12322886B00689 /* Coordinator */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = CoordinatorDynamic;
+			productName = Coordinator;
 		};
-		E0DCB4815E9BBA687544F5A8 /* CoordinatorDynamic */ = {
+		DDFD998537420C9E6ED4B19F /* Coordinator */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = CoordinatorDynamic;
+			productName = Coordinator;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

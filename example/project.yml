@@ -6,23 +6,22 @@ options:
   indentWidth: 4
   tabWidth: 4
   createIntermediateGroups: true
-  deploymentTarget:
-    iOS: 15.0
 
 settings:
     CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED: YES
-    IPHONEOS_DEPLOYMENT_TARGET: 15.0
+    IPHONEOS_DEPLOYMENT_TARGET: 15.4
+    DEVELOPMENT_TEAM: PPSF6CNP8Q
 
 packages:
  
-    CoordinatorDynamic:
+    Coordinator:
       path: ..
 
 targets:
 
   Example:
     dependencies:
-      - package: CoordinatorDynamic
+      - package: Coordinator
     platform: iOS
     properties:
       UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
@@ -32,8 +31,7 @@ targets:
         - ExampleTests
     settings:
       INFOPLIST_FILE: targets/main/Info.plist
-      IPHONEOS_DEPLOYMENT_TARGET: 15.0
-      PRODUCT_BUNDLE_IDENTIFIER: "dev.jano.example"
+      PRODUCT_BUNDLE_IDENTIFIER: "dev.jano.coordinator.example"
       CURRENT_PROJECT_VERSION: 1
       MARKETING_VERSION: 1.0.0
       PRODUCT_NAME: Example
@@ -47,7 +45,7 @@ targets:
 
   ExampleTests:
     dependencies:
-      - package: CoordinatorDynamic
+      - package: Coordinator
     platform: iOS
     settings:
       INFOPLIST_FILE: targets/tests/Info.plist

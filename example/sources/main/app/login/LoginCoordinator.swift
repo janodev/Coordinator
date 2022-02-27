@@ -1,11 +1,11 @@
 @testable import Coordinator
 import UIKit
 
-public final class LoginCoordinator: Coordinator {
+public final class LoginCoordinator: Coordinating {
 
     var window: UIWindow
 
-    public init(parent: Coordinator, window: UIWindow) {
+    public init(parent: Coordinating, window: UIWindow) {
         self.children = []
         self.parent = parent
         self.window = window
@@ -22,8 +22,8 @@ public final class LoginCoordinator: Coordinator {
 
     // MARK: - Coordinator
 
-    public var children: [Coordinator]
-    public var parent: Coordinator?
+    public var children: [Coordinating]
+    public var parent: Coordinating?
 
     public func start() {
         window.rootViewController = loginViewController

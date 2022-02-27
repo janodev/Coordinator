@@ -4,17 +4,17 @@ import UIKit
 private let log = Logger(subsystem: "dev.jano", category: "coordinator")
 
 @MainActor
-public protocol Coordinator: AnyObject
+public protocol Coordinating: AnyObject
 {
-    var parent: Coordinator? { get }
-    var children: [Coordinator] { get set }
-    func add(_ coordinator: Coordinator)
-    func remove(_ coordinator: Coordinator)
+    var parent: Coordinating? { get }
+    var children: [Coordinating] { get set }
+    func add(_ coordinator: Coordinating)
+    func remove(_ coordinator: Coordinating)
     func start()
     func finish()
 }
 
-public extension Coordinator
+public extension Coordinating
 {   
     func finish() {
         DispatchQueue.main.async {
@@ -23,7 +23,7 @@ public extension Coordinator
         }
     }
 
-    func add(_ child: Coordinator) {
+    func add(_ child: Coordinating) {
         DispatchQueue.main.async {
             log.debug("Coordinator \(self.description) is adding a child:  \(child.description)")
             self.children.append(child)
@@ -31,7 +31,7 @@ public extension Coordinator
         }
     }
     
-    func remove(_ child: Coordinator) {
+    func remove(_ child: Coordinating) {
         DispatchQueue.main.async {
             if let index = self.children.lastIndex(where: { $0 === child }) {
                 self.children.remove(at: index)

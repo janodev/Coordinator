@@ -2,13 +2,13 @@
 import os
 import UIKit
 
-public final class MainCoordinator: RootCoordinator
+public final class MainCoordinator: RootCoordinating
 {
     private let log = Logger(subsystem: "dev.jano", category: "coordinator")
 
     // MARK: - Coordinator
 
-    public var children = [Coordinator]() {
+    public var children = [Coordinating]() {
         didSet {
             if children.isEmpty {
                 log.debug("No children left. Calling start() again")
@@ -17,7 +17,7 @@ public final class MainCoordinator: RootCoordinator
         }
     }
 
-    public var parent: Coordinator?
+    public var parent: Coordinating?
 
     public func start()
     {
@@ -40,7 +40,7 @@ public final class MainCoordinator: RootCoordinator
 
     private var credentials: String?
 
-    private func initialCoordinator() -> Coordinator? {
+    private func initialCoordinator() -> Coordinating? {
         switch credentials {
         case .some:
             log.debug("Credentials found. Navigating to some screen.")

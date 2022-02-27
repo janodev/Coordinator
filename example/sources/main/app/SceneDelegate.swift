@@ -4,7 +4,7 @@ import UIKit
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate
 {
     var window: UIWindow?
-    private var coordinator: Coordinator?
+    private var coordinator: Coordinating?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions)
     {

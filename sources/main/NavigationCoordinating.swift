@@ -1,7 +1,7 @@
 import UIKit
 
 @MainActor
-public protocol NavigationCoordinator: Coordinator, UINavigationControllerDelegate {
+public protocol NavigationCoordinating: Coordinating, UINavigationControllerDelegate {
     
     var navigationController: UINavigationController { get }
 }

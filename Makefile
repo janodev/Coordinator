@@ -1,63 +1,69 @@
 #!/bin/bash -e -o pipefail
 
-.PHONY: clean compile help jazzy project requirebrew requirejazzy requireswiftdoc requirexcodegen resetgit swiftdoc swiftlint test xcodegen
+# These get the first project if there are several.
+PROJECT_NAME = $(shell ls | grep xcodeproj | head -1 | xargs -I{} xcodebuild -project {} -showBuildSettings | grep PROJECT_NAME | awk '{print $$NF}')
+MODULE_NAME = $(shell ls | grep xcodeproj | head -1 | xargs -I{} xcodebuild -project {} -showBuildSettings | grep PRODUCT_MODULE_NAME | awk '{print $$NF}')
+TARGET_NAME = $(shell swift package dump-package | jq '.products[0].name' | tr -d '"')
+
+.PHONY: clean help project requirebrew requirexcodegen resetgit swiftdoc swiftlint test xcodegen
 
 help: requirebrew xcodegen
 	@echo Usage:
 	@echo ""
-	@echo "  make clean     - removes all generated products"
-	@echo "  make compile   - compile package"
-	@echo "  make jazzy     - generate jazzy docs (https://github.com/realm/jazzy)"
-	@echo "  make project   - generates a xcode project with local dependencies"
-	@echo "  make swiftdoc  - generate swift docs (https://github.com/SwiftDocOrg/swift-doc)"
-	@echo "  make swiftlint - Run swiftlint"
-	@echo "  make test      - Run tests using xcodebuild"
+	@echo "  make clean       - removes all generated products"
+	@echo "  make docc        - Generate documentation"
+	@echo "  make project     - generates a xcode project with local dependencies"
+	@echo "  make projecttest - Run tests using xcodebuild and a generated project"
+	@echo "  make spmcache    - Remove SPM cache"
+	@echo "  make swiftbuild  - compile package using swift build"
+	@echo "  make swiftlint   - Run swiftlint"
+	@echo "  make swifttest   - test package using swift test"
 	@echo ""
 
 clean:
 	rm -rf .build
 	rm -rf .swiftpm
 	rm -rf build
+	rm -rf docs
 	rm -rf Package.resolved
 
-swiftdoc: requireswiftdoc
-	mkdir -p .build/swiftdocs
-	@PROJECT_NAME="$(shell xcodebuild -showBuildSettings | grep PROJECT_NAME | awk '{print $$NF}')"; \
-	swift doc generate sources/main --module-name $$PROJECT_NAME --format html --output .build/swiftdocs
-	@echo "Docs generated at .build/swiftdocs" 
-	@echo "To serve the docs run: cd .build/swiftdocs; python -m SimpleHTTPServer 8080"
-	@echo "Browse the docs at http://127.0.0.1:8080"
+docc:
+	rm -rf docs
+	swift build -Xswiftc "-sdk" -Xswiftc "`xcrun --sdk iphonesimulator --show-sdk-path`" -Xswiftc "-target" -Xswiftc "x86_64-apple-ios15.4-simulator"
+	DOCC_JSON_PRETTYPRINT=YES
+	swift package \
+ 	--allow-writing-to-directory ./docs \
+ 	--target ${TARGET_NAME} \
+ 	generate-documentation \
+ 	--output-path ./docs \
+ 	--transform-for-static-hosting \
+ 	--hosting-base-path $(shell echo ${TARGET_NAME} | tr '[:upper:]' '[:lower:]') \
+	--emit-digest
+	cat docs/linkable-entities.json | jq '.[].referenceURL' -r | sort > docs/all_identifiers.txt
+	sort docs/all_identifiers.txt | sed -e "s/doc:\/\/${TARGET_NAME}\/documentation\\///g" | sed -e "s/^/- \`\`/g" | sed -e 's/$$/``/g' > docs/all_symbols.txt
 
 swiftlint:
 	swift run swiftlint
 
-jazzy: requirejazzy
-	mkdir -p .build/jazzy
-	@PROJECT_MODULE_NAME="$(shell xcodebuild -showBuildSettings | grep PRODUCT_MODULE_NAME | awk '{print $$NF}')"; \
-	jazzy --output .build/jazzy --module $$PROJECT_MODULE_NAME --swift-build-tool spm --sdk simulator --build-tool-arguments -Xswiftc,-swift-version,-Xswiftc,5,-Xswiftc,-sdk,-Xswiftc,"`xcrun --sdk iphonesimulator --show-sdk-path`",-Xswiftc,"-target",-Xswiftc,"x86_64-apple-ios14.4-simulator"
-	@echo "Browse the docs at .build/jazzy/index.html"
-
-compile:
+swiftbuild: 
+	@if [ ! -f Package.swift ]; then echo "You tried to compile as package but Package.swift doesn’t exist." >&2; exit 1; fi
 	swift build -Xswiftc "-sdk" -Xswiftc "`xcrun --sdk iphonesimulator --show-sdk-path`" -Xswiftc "-target" -Xswiftc "x86_64-apple-ios15.0-simulator" 
 
-test: project
-	@PROJECT_NAME="$(shell xcodebuild -showBuildSettings | grep PROJECT_NAME | awk '{print $$NF}')"; \
-	xcodebuild test -scheme $$PROJECT_NAME -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest' CODE_SIGN_IDENTITY= CODE_SIGNING_REQUIRED=NO
+swifttest: 
+	@if [ ! -f Package.swift ]; then echo "You tried to compile as package but Package.swift doesn’t exist." >&2; exit 1; fi
+	swift test -Xswiftc "-sdk" -Xswiftc "`xcrun --sdk iphonesimulator --show-sdk-path`" -Xswiftc "-target" -Xswiftc "x86_64-apple-ios15.0-simulator" 
+
+projecttest: project
+	@echo project name is ${PROJECT_NAME}
+	xcodebuild test -project ${PROJECT_NAME}.xcodeproj -scheme ${PROJECT_NAME} -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12,OS=latest' CODE_SIGN_IDENTITY= CODE_SIGNING_REQUIRED=NO
 
 project: requirexcodegen
-	@PROJECT_NAME="$(shell xcodebuild -showBuildSettings | grep PROJECT_NAME | awk '{print $$NF}')"; \
 	rm -rf "${PROJECT_NAME}.xcodeproj"; \
 	xcodegen generate --project . --spec project.yml; \
-	echo Generated $$PROJECT_NAME.xcodeproj
+	echo Generated ${PROJECT_NAME}.xcodeproj
 
 requirebrew:
 	@if ! command -v brew &> /dev/null; then echo "Please install brew from https://brew.sh/"; exit 1; fi
-
-requirejazzy:
-	@if ! command -v brew &> /dev/null; then echo "Please install jazzy with gem install jazzy"; exit 1; fi
-
-requireswiftdoc: requirebrew
-	@if ! command -v swift-doc &> /dev/null; then echo "Please install swift-doc using 'brew install swiftdocorg/formulae/swift-doc'. Check the logs if trouble arises."; exit 1; fi
 
 requirexcodegen: requirebrew
 	@if ! command -v xcodegen &> /dev/null; then echo "Please install xcodegen using 'brew install xcodegen'"; exit 1; fi
@@ -75,6 +81,9 @@ resetgit:
 	git ls-remote --tags origin | awk '/^(.*)(s+)(.*[a-zA-Z0-9])$$/ {print ":" $$2}' | xargs git push origin; \
 	git tag 1.0.0; \
 	git push origin main --tags
+
+spmcache:
+	rm -rf ~/Library/Caches/org.swift.swiftpm/
 
 list:
 	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$'
