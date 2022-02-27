@@ -4,4 +4,6 @@ import UIKit
 public protocol RootCoordinating: Coordinating {
     
     var window: UIWindow { get }
+
+    init(window: UIWindow)
 }
