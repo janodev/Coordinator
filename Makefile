@@ -4,10 +4,11 @@
 PROJECT_NAME = $(shell ls | grep xcodeproj | head -1 | xargs -I{} xcodebuild -project {} -showBuildSettings | grep PROJECT_NAME | awk '{print $$NF}')
 MODULE_NAME = $(shell ls | grep xcodeproj | head -1 | xargs -I{} xcodebuild -project {} -showBuildSettings | grep PRODUCT_MODULE_NAME | awk '{print $$NF}')
 TARGET_NAME = $(shell swift package dump-package | jq '.products[0].name' | tr -d '"')
+TARGET_NAME_LOWERCASE = $(shell echo ${TARGET_NAME} | tr '[:upper:]' '[:lower:]')
 
 .PHONY: clean help project requirebrew requirexcodegen resetgit swiftdoc swiftlint test xcodegen
 
-help: requirebrew xcodegen
+help: requirebrew requirexcodegen 
 	@echo Usage:
 	@echo ""
 	@echo "  make clean       - removes all generated products"
@@ -27,31 +28,45 @@ clean:
 	rm -rf docs
 	rm -rf Package.resolved
 
-docc:
+docc: requirejq
 	rm -rf docs
-	swift build -Xswiftc "-sdk" -Xswiftc "`xcrun --sdk iphonesimulator --show-sdk-path`" -Xswiftc "-target" -Xswiftc "x86_64-apple-ios15.4-simulator"
+	swift build
 	DOCC_JSON_PRETTYPRINT=YES
 	swift package \
  	--allow-writing-to-directory ./docs \
+	generate-documentation \
  	--target ${TARGET_NAME} \
- 	generate-documentation \
  	--output-path ./docs \
  	--transform-for-static-hosting \
- 	--hosting-base-path $(shell echo ${TARGET_NAME} | tr '[:upper:]' '[:lower:]') \
+ 	--hosting-base-path ${TARGET_NAME} \
 	--emit-digest
 	cat docs/linkable-entities.json | jq '.[].referenceURL' -r | sort > docs/all_identifiers.txt
 	sort docs/all_identifiers.txt | sed -e "s/doc:\/\/${TARGET_NAME}\/documentation\\///g" | sed -e "s/^/- \`\`/g" | sed -e 's/$$/``/g' > docs/all_symbols.txt
+	@echo "Check https://janodev.github.io/${TARGET_NAME}/documentation/${TARGET_NAME_LOWERCASE}/"
+	@echo ""
+
+doccapp: requirejq
+	rm -rf docs
+	mkdir -p docs
+	xcodebuild build -scheme ${TARGET_NAME} -destination generic/platform=iOS
+	DOCC_JSON_PRETTYPRINT=YES
+	xcodebuild docbuild \
+		-scheme ${TARGET_NAME} \
+		-destination generic/platform=iOS \
+		OTHER_DOCC_FLAGS="--transform-for-static-hosting --hosting-base-path ${TARGET_NAME} --output-path docs"
+	@echo "Check https://janodev.github.io/${TARGET_NAME}/documentation/${TARGET_NAME_LOWERCASE}/"
+	@echo ""
 
 swiftlint:
 	swift run swiftlint
 
 swiftbuild: 
 	@if [ ! -f Package.swift ]; then echo "You tried to compile as package but Package.swift doesn’t exist." >&2; exit 1; fi
-	swift build -Xswiftc "-sdk" -Xswiftc "`xcrun --sdk iphonesimulator --show-sdk-path`" -Xswiftc "-target" -Xswiftc "x86_64-apple-ios15.0-simulator" 
+	swift build -Xswiftc "-sdk" -Xswiftc "`xcrun --sdk iphonesimulator --show-sdk-path`" -Xswiftc "-target" -Xswiftc "x86_64-apple-ios15.4-simulator" 
 
 swifttest: 
 	@if [ ! -f Package.swift ]; then echo "You tried to compile as package but Package.swift doesn’t exist." >&2; exit 1; fi
-	swift test -Xswiftc "-sdk" -Xswiftc "`xcrun --sdk iphonesimulator --show-sdk-path`" -Xswiftc "-target" -Xswiftc "x86_64-apple-ios15.0-simulator" 
+	swift test -Xswiftc "-sdk" -Xswiftc "`xcrun --sdk iphonesimulator --show-sdk-path`" -Xswiftc "-target" -Xswiftc "x86_64-apple-ios15.4-simulator" 
 
 projecttest: project
 	@echo project name is ${PROJECT_NAME}
@@ -64,6 +79,9 @@ project: requirexcodegen
 
 requirebrew:
 	@if ! command -v brew &> /dev/null; then echo "Please install brew from https://brew.sh/"; exit 1; fi
+
+requirejq:
+	@if ! command -v jq &> /dev/null; then echo "Please install jq using 'brew install jq'"; exit 1; fi
 
 requirexcodegen: requirebrew
 	@if ! command -v xcodegen &> /dev/null; then echo "Please install xcodegen using 'brew install xcodegen'"; exit 1; fi

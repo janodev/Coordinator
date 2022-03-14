@@ -1,5 +1,4 @@
 import UIKit
-import Coordinator
 
 public struct RootCoordinatorFactory
 {
