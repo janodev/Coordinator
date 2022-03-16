@@ -7,7 +7,7 @@ options:
   tabWidth: 4
   createIntermediateGroups: true
   deploymentTarget:
-    iOS: 15.0
+    iOS: 15.4
 
 settings:
   CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED: YES
@@ -19,7 +19,7 @@ targets:
    settings:
      CURRENT_PROJECT_VERSION: 1
      INFOPLIST_FILE: targets/main/Info.plist
-     IPHONEOS_DEPLOYMENT_TARGET: 15.0
+     IPHONEOS_DEPLOYMENT_TARGET: 15.4
      PRODUCT_BUNDLE_IDENTIFIER: dev.jano.coordinator
      PRODUCT_NAME: Coordinator
    sources: 

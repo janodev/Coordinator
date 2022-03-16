@@ -16,7 +16,7 @@ public final class HomeCoordinator: Coordinating {
         let label = UILabel()
         label.text = "Home"
         controller.view.addSubview(label)
-        controller.view.backgroundColor = .systemOrange
+        controller.view.backgroundColor = .systemPurple
         return controller
     }
 
